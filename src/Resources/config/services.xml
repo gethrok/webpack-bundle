@@ -15,6 +15,9 @@
         <parameter key="maba_webpack.twig_function_name"/>
         <parameter key="maba_webpack.webpack_config_path"/>
         <parameter key="maba_webpack.webpack_config_parameters"/>
+        <parameter key="maba_webpack.webpack_entry_config_path"/>
+        <parameter key="maba_webpack.manifest_file_path"/>
+        <parameter key="maba_webpack.json_manifest_file_path"/>
         <parameter key="maba_webpack.aliases.register_bundles"/>
         <parameter key="maba_webpack.aliases.path_in_bundle"/>
         <parameter key="maba_webpack.aliases.additional"/>
@@ -27,9 +30,7 @@
         <parameter key="maba_webpack.bin.disable_tty"/>
 
         <!-- Not configurable from config.yml -->
-        <parameter key="maba_webpack.webpack_entry_config_path">%kernel.cache_dir%/webpack.config.js</parameter>
-        <parameter key="maba_webpack.manifest_file_path">%kernel.cache_dir%/webpack_manifest.php</parameter>
-        <parameter key="maba_webpack.json_manifest_file_path">%kernel.cache_dir%/webpack_manifest.json</parameter>
+
         <parameter key="maba_webpack.root_directory">%kernel.root_dir%/..</parameter>
     </parameters>
 

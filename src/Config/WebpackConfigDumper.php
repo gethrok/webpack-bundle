@@ -45,6 +45,10 @@ class WebpackConfigDumper
             ))
         );
 
+        if (!is_dir(dirname($this->path))) {
+            mkdir(dirname($this->path));
+        }
+
         file_put_contents($this->path, $configContents);
 
         return $this->path;

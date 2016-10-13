@@ -64,6 +64,11 @@ class Configuration implements ConfigurationInterface
 
         $config = $children->arrayNode('config')->addDefaultsIfNotSet()->children();
         $config->scalarNode('path')->defaultValue('%kernel.root_dir%/config/webpack.config.js');
+
+        $config->scalarNode('cache_config_path')->defaultValue('%kernel.cache_dir%/webpack.config.js');
+        $config->scalarNode('cache_manifest_path')->defaultValue('%kernel.cache_dir%/webpack_manifest.php');
+        $config->scalarNode('cache_json_manifest_path')->defaultValue('%kernel.cache_dir%/webpack_manifest.json');
+        
         $config->arrayNode('parameters')->treatNullLike(array())->useAttributeAsKey('name')->prototype('variable');
 
         $entryFile = $children->arrayNode('entry_file')->addDefaultsIfNotSet()->children();

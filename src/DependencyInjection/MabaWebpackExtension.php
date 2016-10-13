@@ -45,7 +45,9 @@ class MabaWebpackExtension extends Extension
 
         $container->setParameter('maba_webpack.webpack_config_path', $config['config']['path']);
         $container->setParameter('maba_webpack.webpack_config_parameters', $config['config']['parameters']);
-
+        $container->setParameter('maba_webpack.webpack_entry_config_path', $config['config']['cache_config_path']);
+        $container->setParameter('maba_webpack.manifest_file_path', $config['config']['cache_manifest_path']);
+        $container->setParameter('maba_webpack.json_manifest_file_path', $config['config']['cache_json_manifest_path']);
         if (!$config['entry_file']['enabled']) {
             // both empty disables the functionality
             $container->setParameter('maba_webpack.entry_file.disabled_extensions', array());
