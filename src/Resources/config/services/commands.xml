@@ -11,35 +11,74 @@
     <services>
         <service id="maba_webpack.command.compile"
                  class="Maba\Bundle\WebpackBundle\Command\CompileCommand">
-            <tag name="console.command"/>
+            <tag name="console.command" command="maba:webpack:compile"/>
 
             <argument type="service" id="maba_webpack.webpack_compiler"/>
             <argument type="service" id="logger"/>
         </service>
         <service id="maba_webpack.command.dev_server"
                  class="Maba\Bundle\WebpackBundle\Command\DevServerCommand">
-            <tag name="console.command"/>
+            <tag name="console.command" command="maba:webpack:dev-server"/>
 
             <argument type="service" id="maba_webpack.webpack_compiler"/>
         </service>
         <service id="maba_webpack.command.setup"
                  class="Maba\Bundle\WebpackBundle\Command\SetupCommand">
-            <tag name="console.command"/>
+            <tag name="console.command" command="maba:webpack:setup"/>
 
             <argument type="service">
                 <service class="stdClass">
                     <factory service="file_locator" method="locate"/>
-                    <argument>@MabaWebpackBundle/Resources/defaultConfig/package.json</argument>
+                    <argument>@MabaWebpackBundle/Resources/defaultConfig/v1/package.json</argument>
                 </service>
             </argument>
             <argument type="service">
                 <service class="stdClass">
                     <factory service="file_locator" method="locate"/>
-                    <argument>@MabaWebpackBundle/Resources/defaultConfig/webpack.config.js</argument>
+                    <argument>@MabaWebpackBundle/Resources/defaultConfig/v1/webpack.config.js</argument>
                 </service>
             </argument>
-            <argument>%kernel.root_dir%/..</argument>
-            <argument>%kernel.root_dir%/config</argument>
+            <argument type="service">
+                <service class="stdClass">
+                    <factory service="file_locator" method="locate"/>
+                    <argument>@MabaWebpackBundle/Resources/defaultConfig/latest/package.json</argument>
+                </service>
+            </argument>
+            <argument type="service">
+                <service class="stdClass">
+                    <factory service="file_locator" method="locate"/>
+                    <argument>@MabaWebpackBundle/Resources/defaultConfig/latest/webpack.config.js</argument>
+                </service>
+            </argument>
+            <argument>%maba_webpack.bin.working_directory%</argument>
+            <argument>%maba_webpack.webpack_config_path%</argument>
+            <argument type="service">
+                <service class="Maba\Bundle\WebpackBundle\Command\InstallAssetsHelper">
+                    <argument type="service">
+                        <service class="Symfony\Component\Console\Helper\QuestionHelper"/>
+                    </argument>
+                    <argument>%maba_webpack.bin.working_directory%</argument>
+                    <argument>%maba_webpack.bin.disable_tty%</argument>
+                </service>
+            </argument>
+        </service>
+        <service id="maba_webpack.command.install_node_modules"
+                 class="Maba\Bundle\WebpackBundle\Command\InstallNodeModulesCommand">
+            <tag name="console.command" command="maba:webpack:install-node-modules"/>
+
+            <argument type="service">
+                <service class="Maba\Bundle\WebpackBundle\Command\InstallAssetsHelper">
+                    <argument type="service">
+                        <service class="Symfony\Component\Console\Helper\QuestionHelper"/>
+                    </argument>
+                    <argument>%maba_webpack.bin.working_directory%</argument>
+                    <argument>%maba_webpack.bin.disable_tty%</argument>
+
+                    <call method="setInstallWithoutAsking">
+                        <argument>true</argument>
+                    </call>
+                </service>
+            </argument>
         </service>
     </services>
 </container>

@@ -15,6 +15,11 @@ class WebpackConfig
     protected $aliases;
 
     /**
+     * @var array
+     */
+    protected $assetGroups;
+
+    /**
      * @var mixed
      */
     protected $cacheContext;
@@ -25,7 +30,7 @@ class WebpackConfig
     protected $configPath;
 
     /**
-     * @var boolean
+     * @var bool
      */
     protected $fileDumped = false;
 
@@ -66,6 +71,22 @@ class WebpackConfig
     }
 
     /**
+     * @return array
+     */
+    public function getAssetGroups()
+    {
+        return $this->assetGroups;
+    }
+
+    /**
+     * @param array $assetGroups
+     */
+    public function setAssetGroups(array $assetGroups)
+    {
+        $this->assetGroups = $assetGroups;
+    }
+
+    /**
      * @return mixed
      */
     public function getCacheContext()
@@ -100,7 +121,7 @@ class WebpackConfig
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function wasFileDumped()
     {
@@ -108,7 +129,7 @@ class WebpackConfig
     }
 
     /**
-     * @param boolean $fileDumped
+     * @param bool $fileDumped
      */
     public function setFileDumped($fileDumped)
     {

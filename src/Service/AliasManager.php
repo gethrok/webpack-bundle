@@ -43,7 +43,7 @@ class AliasManager
             return $this->aliases;
         }
 
-        $aliases = array();
+        $aliases = [];
         foreach ($this->registerBundles as $bundleName) {
             $aliases['@' . $bundleName] = rtrim($this->fileLocator->locate('@' . $bundleName), '/');
             try {
@@ -58,7 +58,9 @@ class AliasManager
         foreach ($this->additionalAliases as $alias => $path) {
             $realPath = realpath($path);
             if ($realPath === false) {
-                throw new RuntimeException(sprintf('Alias (%s) path not found: %s', $alias, $path));
+                // just skip - allow non-existing aliases, like default ones
+                unset($aliases['@' . $alias]);
+                continue;
             }
             $aliases['@' . $alias] = $realPath;
         }

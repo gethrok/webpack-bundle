@@ -2,6 +2,8 @@
 
 namespace Maba\Bundle\WebpackBundle\Service;
 
+use Maba\Bundle\WebpackBundle\Exception\AssetNotFoundException;
+
 class AssetResolver
 {
     private $assetLocator;
@@ -15,9 +17,14 @@ class AssetResolver
         $this->entryFileManager = $entryFileManager;
     }
 
+    /**
+     * @param string $asset
+     * @return string
+     * @throws AssetNotFoundException
+     */
     public function resolveAsset($asset)
     {
-        $assetParts = array();
+        $assetParts = [];
 
         $position = strrpos($asset, '!');
         if ($position !== false) {
@@ -34,7 +41,7 @@ class AssetResolver
         $resolvedAsset = implode('!', $assetParts);
 
         if ($this->entryFileManager->isEntryFile($locatedAsset)) {
-            $resolvedAsset = 'extract-file?q=' . urlencode($resolvedAsset) . '!';
+            $resolvedAsset = 'extract-file-loader?q=' . rawurlencode($resolvedAsset) . '!';
         }
 
         return $resolvedAsset;

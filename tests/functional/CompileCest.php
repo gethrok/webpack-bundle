@@ -15,19 +15,23 @@ class CompileCest
     public function getInternalErrorIfAssetsNotDumped(FunctionalTester $I)
     {
         $I->bootKernelWith();
-        $I->amOnPage('/');
-        $I->canSeeResponseCodeIs(500);
-        $I->see('Manifest file not found');
+        try {
+            $I->amOnPage('/');
+            $I->canSeeResponseCodeIs(500);
+            $I->see('Manifest file not found');
+        } catch (\LogicException $logicException) {
+            // handle case for earlier symfony where there is no error listener
+        }
     }
 
     public function getNoErrorIfAssetsAreDumped(FunctionalTester $I)
     {
         $I->bootKernelWith();
-        $I->runCommand('maba_webpack.command.setup');
+        $I->runCommand('maba:webpack:setup');
         $I->seeFileFound(__DIR__ . '/Fixtures/package.json');
         $I->seeFileFound(__DIR__ . '/Fixtures/app/config/webpack.config.js');
 
-        $I->runCommand('maba_webpack.command.compile');
+        $I->runCommand('maba:webpack:compile');
         $I->seeCommandStatusCode(0);
         $I->seeInCommandDisplay('webpack');
         $I->dontSeeInCommandDisplay('error');
@@ -38,22 +42,31 @@ class CompileCest
 
         $I->dontSeeInSource('<link rel="stylesheet"');
 
-        $I->seeInSource('<script src="http://localhost:8080/compiled/');
+        $I->seeInSource('<script src="/compiled/');
         $src = $I->grabAttributeFrom('script', 'src');
 
-        preg_match('#http://localhost:8080/compiled/(.*)#', $src, $matches);
+        preg_match('#/compiled/(.*)#', $src, $matches);
         $I->seeFileFound(__DIR__ . '/Fixtures/web/compiled/' . $matches[1]);
         $I->openFile(__DIR__ . '/Fixtures/web/compiled/' . $matches[1]);
         $I->canSeeInThisFile('.green');
         $I->canSeeInThisFile('.red');
     }
 
+    public function getErrorFromBundleWithoutErrorSuppressing(FunctionalTester $I)
+    {
+        $I->bootKernelWith('bundle_error');
+
+        $I->runCommand('maba:webpack:setup');
+        $I->runCommand('maba:webpack:compile');
+        $I->seeCommandStatusCode(1);
+    }
+
     public function getErrorWithTwigParseError(FunctionalTester $I)
     {
         $I->bootKernelWith('parse_error');
 
-        $I->runCommand('maba_webpack.command.setup');
-        $I->runCommand('maba_webpack.command.compile');
+        $I->runCommand('maba:webpack:setup');
+        $I->runCommand('maba:webpack:compile');
         $I->seeCommandStatusCode(1);
     }
 
@@ -61,8 +74,8 @@ class CompileCest
     {
         $I->bootKernelWith('parse_error2');
 
-        $I->runCommand('maba_webpack.command.setup');
-        $I->runCommand('maba_webpack.command.compile');
+        $I->runCommand('maba:webpack:setup');
+        $I->runCommand('maba:webpack:compile');
         $I->seeCommandStatusCode(1);
     }
 
@@ -70,8 +83,8 @@ class CompileCest
     {
         $I->bootKernelWith('parse_error_suppress');
 
-        $I->runCommand('maba_webpack.command.setup');
-        $I->runCommand('maba_webpack.command.compile');
+        $I->runCommand('maba:webpack:setup');
+        $I->runCommand('maba:webpack:compile');
         $I->seeCommandStatusCode(0);
     }
 
@@ -79,8 +92,8 @@ class CompileCest
     {
         $I->bootKernelWith('unknowns');
 
-        $I->runCommand('maba_webpack.command.setup');
-        $I->runCommand('maba_webpack.command.compile');
+        $I->runCommand('maba:webpack:setup');
+        $I->runCommand('maba:webpack:compile');
         $I->seeCommandStatusCode(1);
     }
 
@@ -88,8 +101,8 @@ class CompileCest
     {
         $I->bootKernelWith('unknowns_suppress');
 
-        $I->runCommand('maba_webpack.command.setup');
-        $I->runCommand('maba_webpack.command.compile');
+        $I->runCommand('maba:webpack:setup');
+        $I->runCommand('maba:webpack:compile');
         $I->seeCommandStatusCode(0);
     }
 }
